@@ -18,7 +18,7 @@ echo "Create Securitygroup"
 #
 
 echo Create Securitygroup >> ${VpcId}-build-log.json
- securitygroup=$(aws ec2 create-security-group --group-name "SSH-${VPC_stack}-${EC2_stack}" --description "Security Group for SSH Access" --vpc-id ${VpcId} | grep GroupId | cut -d':' -f2 | tr -d '"| |,' )
+ securitygroup=$(aws ec2 create-security-group --group-name "${VPC_stack}-${EC2_stack}-sg" --description "Security Group for Access" --vpc-id ${VpcId} | grep GroupId | cut -d':' -f2 | tr -d '"| |,' )
 
 aws ec2 describe-security-groups --group-id ${securitygroup} >> ${VpcId}-build-log.json
 
@@ -35,8 +35,8 @@ echo SecurityGroup Values >> ${VpcId}-build-log.json
  aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "209.58.139.29/32" # NORD SanJose
 
  #
- aws ec2 create-tags --resources ${securitygroup} --tags Key=Name,Value="${VPC_stack}-${EC2_stack}-Public"
- aws ec2 create-tags --resources ${securitygroup} --tags Key=Stack,Value="${VPC_stack}-${EC2_stack}"
+ aws ec2 create-tags --resources ${securitygroup} --tags Key=Name,Value="${VPC_stack}-${EC2_stack}-sg"
+ #aws ec2 create-tags --resources ${securitygroup} --tags Key=Stack,Value="${VPC_stack}-${EC2_stack}"
 
  ## double up
 

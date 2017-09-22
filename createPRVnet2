@@ -19,7 +19,7 @@ echo "Create PRIVATE subnet "
 
 #
  privateSub2=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block "${PRV2cidr}" --availability-zone ${PRV2azone} | grep 'SubnetId' | cut -d':' -f2 | tr -d '"| |,')
- aws ec2 create-tags --resources "${privateSub2}" --tags Key=Name,Value=privateSub2-${VPC_stack}
+ aws ec2 create-tags --resources "${privateSub2}" --tags Key=Name,Value=${VPC_stack}-prv2-${PRV2azone}
 
 echo ${privateSub2} >> ${VpcId}-build-log.json
 aws ec2 describe-subnets --subnet-ids ${privateSub2} >> ${VpcId}-build-log.json

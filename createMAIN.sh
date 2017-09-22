@@ -8,6 +8,17 @@
 # source ./createCFG.env     # each createFILE in turn calls this
 
 # add something here to halt script if in wrong Account and/or Region
+# add something here to halt script if in wrong Account and/or Region
+export myACCOUNT=$(aws iam list-account-aliases | tr -d '{|}|[|]|"| |-' | egrep -v ':|^$');
+export myREGION=$(aws configure list | grep region | awk '{print $2}' | tr -d '{|}|[|]|"| |-' );
+
+source ./createCFG.env
+
+echo $myACCOUNT $AWSaccount
+[[ "$myACCOUNT" -eq "$AWSaccount" ]] && { : ; } || { echo ERROR Account MisMatch ; exit ; }
+
+cleanCFG=$(tail -n +27 createCFG.env | egrep -ic "VpcId|Pubnet|AvailabilityZone|PRVnet|iNETGW|RouterID")
+[ $cleanCFG -gt 0 ] && { echo ERROR Config file is already populated ; exit ; }
 
 # VPC
 source ./createVPC
@@ -30,11 +41,13 @@ source ./createIGW
 # Security Groups
 source ./createSecGrp
 
+exit 0;
+
 # PEM pair
 source ./createPEMKEY
 
 # PUB EC2
-source ./createPUBEC2-1          #  
+source ./createPUBEC2-1          #
 
 # PUB EC2
 source ./createPUBEC2-2          #
