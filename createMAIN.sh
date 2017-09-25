@@ -41,8 +41,6 @@ source ./createIGW
 # Security Groups
 source ./createSecGrp
 
-exit 0;
-
 # PEM pair
 source ./createPEMKEY
 
