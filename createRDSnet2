@@ -16,20 +16,23 @@ echo "Create RDS subnet "
 #debug block
   ./showENV.sh
 #
+
 #
- RDSsubnet2=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block "${RDS2cidr}" --availability-zone ${PRV2azone} | grep 'SubnetId' | cut -d':' -f2 | tr -d '"| |,')
- aws ec2 create-tags --resources "${RDSsubnet2}" --tags Key=Name,Value=${VPC_stack}-rds2-${PRV2azone}
+ RDSsubnet2=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block "${RDS2cidr}" --availability-zone ${RDS2azone} | grep 'SubnetId' | cut -d':' -f2 | tr -d '"| |,')
+
+ # New Naming Standards
+  aws ec2 create-tags --resources "${RDSsubnet2}" --tags Key=Name,Value=${MajorTag}-${MinorTag}-rds2-${RDS2azone}-sn
 
 echo ${RDSsubnet2} >> ${VpcId}-build-log.json
-aws ec2 describe-subnets --subnet-ids ${RDSsubnet2} >> ${VpcId}-build-log.json
+ aws ec2 describe-subnets --subnet-ids ${RDSsubnet2} >> ${VpcId}-build-log.json
 
 # update creatCFG file
-  echo "export PRVnet2=${RDSsubnet2}" >> ${build_CFG}
+echo "export RDSnet2=${RDSsubnet2}" >> ${build_CFG}
 
 echo "Select Availability Zone" >> ${VpcId}-build-log.json
-AZone1=$(aws ec2 describe-subnets --subnet-ids ${RDSsubnet2} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
+RDS2azone=$(aws ec2 describe-subnets --subnet-ids ${RDSsubnet2} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
 
 # update creatCFG file
-  echo "export AZone2=${AZone2}" >> ${build_CFG}
+  echo "export RDS2azone=${RDS2azone}" >> ${build_CFG}
 
 # fin 0

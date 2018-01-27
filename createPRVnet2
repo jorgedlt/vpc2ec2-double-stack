@@ -18,19 +18,21 @@ echo "Create PRIVATE subnet "
 #
 
 #
- privateSub2=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block "${PRV2cidr}" --availability-zone ${PRV2azone} | grep 'SubnetId' | cut -d':' -f2 | tr -d '"| |,')
- aws ec2 create-tags --resources "${privateSub2}" --tags Key=Name,Value=${VPC_stack}-prv2-${PRV2azone}
+privateSub2=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block "${PRV2cidr}" --availability-zone ${PRV2azone} | grep 'SubnetId' | cut -d':' -f2 | tr -d '"| |,')
+
+ # New Naming Standards
+  aws ec2 create-tags --resources ${privateSub2} --tags Key=Name,Value=${MajorTag}-${MinorTag}-prv2-${PRV2azone}-sn
 
 echo ${privateSub2} >> ${VpcId}-build-log.json
 aws ec2 describe-subnets --subnet-ids ${privateSub2} >> ${VpcId}-build-log.json
 
 # update creatCFG file
-  echo "export PRVnet2=${privateSub2}" >> ${build_CFG}
+echo "export PRVnet2=${privateSub2}" >> ${build_CFG}
 
 echo "Select Availability Zone" >> ${VpcId}-build-log.json
-AZone1=$(aws ec2 describe-subnets --subnet-ids ${privateSub2} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
+AZone2=$(aws ec2 describe-subnets --subnet-ids ${privateSub2} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
 
 # update creatCFG file
-  echo "export AZone2=${AZone2}" >> ${build_CFG}
+echo "export AZone2=${AZone2}" >> ${build_CFG}
 
 # fin 0

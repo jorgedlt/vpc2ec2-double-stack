@@ -9,8 +9,12 @@ echo
 export myACCOUNT=$(aws iam list-account-aliases | tr -d '{|}|[|]|"| |-' | egrep -v ':|^$');
 export myREGION=$(aws configure list | grep region | awk '{print $2}' | tr -d '{|}|[|]|"| |-' );
 #
+ echo "${CYAN}  ACCNTID            :${WHITE} ${myACCNTID}"
  echo "${CYAN}  ACCOUNT            :${WHITE} ${myACCOUNT}"
  echo "${CYAN}  REGION             :${WHITE} ${myREGION}"
+ echo
+ echo "${CYAN}  MajorTag           :${WHITE} ${MajorTag}"
+ echo "${CYAN}  MinorTag           :${WHITE} ${MinorTag}"
  echo
  echo "${CYAN}  build_CFG file     :${GREEN} ${build_CFG}"
  echo "${CYAN}  VPCid              :${YELLOW} ${VpcId}"
@@ -27,16 +31,18 @@ export myREGION=$(aws configure list | grep region | awk '{print $2}' | tr -d '{
  echo "${CYAN}  PRV2cidr            :${GREEN} ${PRV2cidr}"
  echo
  echo "${CYAN}  AZone1              :${YELLOW} ${AZone1}"
+ echo "${CYAN}  AZone2              :${YELLOW} ${AZone2}"
  echo
  echo "${CYAN}  PUBnet1             :${YELLOW} ${PUBnet1}"
  echo "${CYAN}  PRVnet1             :${YELLOW} ${PRVnet1}"
- echo "${CYAN}  DBSnet1             :${YELLOW} ${DBSnet1}"
+ echo "${CYAN}  RDSnet1             :${YELLOW} ${RDSnet1}"
  echo
- echo "${CYAN}  AZone2              :${YELLOW} ${AZone2}"
+ echo "${CYAN}  RDS1azone           :${YELLOW} ${RDS1azone}"
+ echo "${CYAN}  RDS2azone           :${YELLOW} ${RDS2azone}"
  echo
  echo "${CYAN}  PUBnet2             :${YELLOW} ${PUBnet2}"
  echo "${CYAN}  PRVnet2             :${YELLOW} ${PRVnet2}"
- echo "${CYAN}  DBSnet2             :${YELLOW} ${DBSnet2}"
+ echo "${CYAN}  RDSnet2             :${YELLOW} ${RDSnet2}"
  echo
  echo "${CYAN}  AWS_DEFAULT_REGION :${GREEN} ${AWS_DEFAULT_REGION}"
  echo

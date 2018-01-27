@@ -6,7 +6,6 @@
 
 # jorgedlt@gmail.com - 03 MAR 2017 / 02 JUL 2017
 
-
 # Load ENV parameters
 source ./createCFG.env
 
@@ -17,18 +16,20 @@ echo "Create PUBLIC subnet"
 #
 
  publicSub1=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block ${PUB1cidr} --availability-zone ${PUB1azone} | grep SubnetId | cut -d':' -f2 | tr -d '"| |,')
- aws ec2 create-tags --resources ${publicSub1} --tags Key=Name,Value=${VPC_stack}-pub1-${PRV1azone}
+
+# New Naming Standards
+   aws ec2 create-tags --resources ${publicSub1} --tags Key=Name,Value=${MajorTag}-${MinorTag}-pub1-${PUB1azone}-sn
 
 echo PUBNET1 ${publicSub1} >> ${VpcId}-build-log.json
  aws ec2 describe-subnets --subnet-ids ${publicSub1} >> ${VpcId}-build-log.json
 
- # update creatCFG file
-echo "export PUBnet1=${publicSub1}" >> ${build_CFG}
+# update creatCFG file
+ echo "export PUBnet1=${publicSub1}" >> ${build_CFG}
 
-echo "Select Availability Zone" >> ${VpcId}-build-log.json
+ echo "Select Availability Zone" >> ${VpcId}-build-log.json
  AZone1=$(aws ec2 describe-subnets --subnet-ids ${publicSub1} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
 
- # update creatCFG file
-   echo "export AZone1=${AZone1}" >> ${build_CFG}
+# update creatCFG file
+ echo "export AZone1=${AZone1}" >> ${build_CFG}
 
 # fin 0

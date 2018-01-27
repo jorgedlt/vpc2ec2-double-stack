@@ -19,23 +19,20 @@ echo "Create PRIVATE subnet "
 
 #
  privateSub1=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block "${PRV1cidr}" --availability-zone ${PRV1azone}  | grep 'SubnetId' | cut -d':' -f2 | tr -d '"| |,')
- aws ec2 create-tags --resources "${privateSub1}" --tags Key=Name,Value=${VPC_stack}-prv1-${PRV1azone}
 
-echo ${privateSub1} >> ${VpcId}-build-log.json
-aws ec2 describe-subnets --subnet-ids ${privateSub1} >> ${VpcId}-build-log.json
+ # New Naming Standards
+  aws ec2 create-tags --resources ${privateSub1} --tags Key=Name,Value=${MajorTag}-${MinorTag}-prv1-${PRV1azone}-sn
 
-# update creatCFG file
-echo "export PRVnet1=${privateSub1}" >> ${build_CFG}
-
-# no Select Availability Zone -- not sure why ??
+ echo ${privateSub1} >> ${VpcId}-build-log.json
+ aws ec2 describe-subnets --subnet-ids ${privateSub1} >> ${VpcId}-build-log.json
 
 # update creatCFG file
-echo "export PRVnet1=${privateSub1}" >> ${build_CFG}
+ echo "export PRVnet1=${privateSub1}" >> ${build_CFG}
 
-echo "Select Availability Zone" >> ${VpcId}-build-log.json
+ echo "Select Availability Zone" >> ${VpcId}-build-log.json
 AZone1=$(aws ec2 describe-subnets --subnet-ids ${privateSub1} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
 
 # update creatCFG file
-echo "export AZone1=${AZone1}" >> ${build_CFG}
+ echo "export AZone1=${AZone1}" >> ${build_CFG}
 
 # fin 0

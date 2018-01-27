@@ -33,7 +33,8 @@ EC2pub2=$(aws ec2 run-instances --count 1 \
 # work out how the sg has AvailabilityZone
 
 #
-  workerID=$( echo {0..9}{0..9}{0..9}{0..9} | tr ' ' '\012' | gshuf | head -1 )
+#  workerID=$( echo {0..9}{0..9}{0..9}{0..9} | tr ' ' '\012' | gshuf | head -1 )
 #
-  aws ec2 create-tags --resources ${EC2pub2} --tags Key=Name,Value=${VPC_stack}-${EC2_stack}-PUB2-${workerID}
-#
+  aws ec2 create-tags --resources ${EC2pub2} --tags Key=Name,Value=${MajorTag}-${MinorTag}-pub2-appsrv-${AZone2}-ec2
+
+# TODO - needs ec2 instance lock out and detail monitoring
