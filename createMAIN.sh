@@ -19,33 +19,31 @@ source ./createCFG.env
 echo $myACCOUNT $AWSaccount
 [[ "$myACCOUNT" -eq "$AWSaccount" ]] && { : ; } || { echo ERROR Account MisMatch ; exit ; }
 
-cleanCFG=$(tail -n +36 createCFG.env | egrep -ic "VpcId|Pubnet|AvailabilityZone|PRVnet|iNETGW|RouterID")
+# previosly set to +36, but adding the i<cidr> info moved it down
+cleanCFG=$(tail -n +72 createCFG.env | egrep -ic "VpcId|Pubnet|AvailabilityZone|PRVnet|iNETGW|RouterID")
 [ $cleanCFG -gt 0 ] && { echo ERROR Config file is already populated ; exit ; }
 
-# VPC
+# app VPC
  source ./createVPC
 # PUBLIC Subnet
  source ./createPUBnet1
-# PUBLIC Subnet
+# app PUBLIC Subnet
  source ./createPUBnet2
-# PRIVATE Subnet
+# app PRIVATE Subnet
  source ./createPRVnet1
-# PRIVATE Subnet
+# app PRIVATE Subnet
  source ./createPRVnet2
-# Internet Gateway
+# app Internet Gateway
  source ./createIGW
-# Security Groups
+# app Security Groups
  source ./createSecGrp
-# PEM pair
+# app PEM pair
+ source ./createPEMKEY
 
 # PRIVATE Subnet
  source ./createRDSnet1
 # PRIVATE Subnet
  source ./createRDSnet2
-
-#
- source ./createPEMKEY
-#
 
 # PUB EC2
 source ./createPUBEC2-1          #
@@ -55,16 +53,17 @@ source ./createPUBEC2-2          #
 # Machine Learning Server
 source ./createPUBEC2-2          #
 
-exit 0;
+# RDS Bastion Server
+source ./createPUBEC2-bastion    #
 
 # identity and Portal option
 
 # Create S3 Buckets
- aws s3api create-bucket --bucket processminer-${MajorTag}-archive --region ${myREGION}
- aws s3api create-bucket --bucket processminer-${MajorTag}-lambda --region ${myREGION}
- aws s3api create-bucket --bucket processminer-${MajorTag}-cloudtrail --region ${myREGION}
- aws s3api create-bucket --bucket processminer-${MajorTag}-albwaf --region ${myREGION}
- aws s3api create-bucket --bucket processminer-${MajorTag}-logging --region ${myREGION}
+ # aws s3api create-bucket --bucket processminer-${MajorTag}-archive --region ${myREGION}
+ # aws s3api create-bucket --bucket processminer-${MajorTag}-lambda --region ${myREGION}
+ # aws s3api create-bucket --bucket processminer-${MajorTag}-cloudtrail --region ${myREGION}
+ # aws s3api create-bucket --bucket processminer-${MajorTag}-albwaf --region ${myREGION}
+ # aws s3api create-bucket --bucket processminer-${MajorTag}-logging --region ${myREGION}
 
  # aws s3api delete-bucket --bucket processminer-${MajorTag}-archive --region ${myREGION}
  # aws s3api delete-bucket --bucket processminer-${MajorTag}-lambda --region ${myREGION}
@@ -72,22 +71,31 @@ exit 0;
  # aws s3api delete-bucket --bucket processminer-${MajorTag}-albwaf --region ${myREGION}
  # aws s3api delete-bucket --bucket processminer-${MajorTag}-logging --region ${myREGION}
 
+# APP RDS with MYSQL -- Leave this for last, as it takes logner to run
+source ./createRDSapp
+
 exit 0;
 
-#### Above are tested, Below are not
-
-# PUB RDS with MYSQL
-# source ./createRDSapp
-
-# API GW
+# API GW  (30% Complete) -- need schema from Manan
 # source ./createAPIGW
 
-# DYNAMODB
+# DYNAMODB (30% Complete) -- need schema from Manan
 # source ./createDYNADB
+# https://stackoverflow.com/questions/42435407/create-dynamodb-table-using-aws-cli
 
-# Cloudwatchmetrics scripts
+# # Cloudwatchmetrics scripts (80% Complete)
+# # https://docs.aws.amazon.com/cli/latest/reference/cloudformation/create-stack.html
+#
+# # To create an AWS CloudFormation stack
+# aws cloudformation create-stack \
+#   --stack-name myteststack \
+#   --template-body file://sampletemplate.json \
+#   --parameters ParameterKey=KeyPairName,ParameterValue=TestKey ParameterKey=SubnetIDs,ParameterValue=SubnetID1\\,SubnetID2
 
-# alb
-# albwaf
+# alb (80% Complete)
+# https://docs.google.com/document/d/13fI_UCX7BJxNVSgIunlMUmmqtE5GvS_FWVLkbhWAOsw/edit
+
+# albwaf (80% Complete)
+# similar to Cloudwatchmetrics
 
 exit 0;

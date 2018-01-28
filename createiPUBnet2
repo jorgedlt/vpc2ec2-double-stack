@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+#
+# Create VPC, InternetGatewayId, Public & Private subnets with EC2
+#
+
+# jorgedlt@gmail.com - 03 MAR 2017 / 02 JUL 2017
+
+
+# Load ENV parameters
+source ./createCFG.env
+
+echo "Create PUBLIC subnet"
+
+#debug block
+  ./showENV.sh
+#
+
+ publicSub2=$(aws ec2 create-subnet --vpc-id "${VpciId}" --cidr-block ${PUB2icidr} --availability-zone ${PUB2iazone} | grep SubnetId | cut -d':' -f2 | tr -d '"| |,')
+
+# New Naming Standards
+ aws ec2 create-tags --resources ${publiciSub2} --tags Key=Name,Value=${MajoriTag}-${MinoriTag}-pub2-${PUB2iazone}-sn
+
+echo PUBNET2 ${publiciSub2} >> ${VpciId}-build-log.json
+ aws ec2 describe-subnets --subnet-ids ${publiciSub2} >> ${VpciId}-build-log.json
+
+ # update creatCFG file
+   echo "export PUBnet2=${publiciSub2}" >> ${build_CFG}
+
+echo "Select Availability Zone" >> ${VpciId}-build-log.json
+ AZone2=$(aws ec2 describe-subnets --subnet-ids ${publiciSub2} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
+
+ # update creatCFG file
+   echo "export AZone2=${iAZone2}" >> ${build_CFG}
+
+# fin 0

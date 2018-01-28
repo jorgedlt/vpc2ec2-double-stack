@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+#
+# Create VPC, InternetGatewayId, Public & Private subnets with EC2
+#
+
+# jorgedlt@gmail.com - 03 MAR 2017 / 02 JUL 2017
+# additional private documentation
+# see - https://docs.google.com/document/d/1RdN2hbPeSvrCDTa76iZyExmVhF-Ct9iv-TcFNMRZwSU/edit
+
+# Load ENV parameters
+source ./createCFG.env
+
+echo "Create RDS App Cluster "
+
+#debug block
+  ./showENV.sh
+#
+
+# create-db-parameter-group
+aws rds create-db-parameter-group \
+    --db-parameter-group-name processminer-grp \
+    --db-parameter-group-family mysql5.7 \
+    --description processminer-grp \
+    --tags Key=general_log,Value=1 \
+           Key=innodb_lock_wait_timeout,Value=3600 \
+           Key=interactive_timeout,Value=230400 \
+           Key=max_allowed_packet,Value=1073741824 \
+           Key=net_buffer_length,Value=1000000 | jq .
+#
+sleep 30
+
+source ./createCFG.env        # be sure and source it
+
+# create-db-subnet-group
+aws rds create-db-subnet-group \
+ --db-subnet-group-name gp-bgisl-rds-grp \
+ --db-subnet-group-description gp-bgisl-rds-grp \
+ --subnet-ids ${RDSnet1} ${RDSnet2} | jq .
+#
+sleep 30
+
+# create-db-instance
+aws rds create-db-instance \
+    --db-name processminer \
+    --db-instance-identifier processminer \
+    --db-instance-class db.t2.medium \
+    --db-subnet-group-name gp-bgisl-rds-grp \
+    --multi-az \
+    --publicly-accessible \
+    --engine MySQL \
+    --engine-version 5.7.16 \
+    --allocated-storage 120 \
+    --master-username gpbgislmasterusr \
+    --master-user-password MwwNHkUp3KMxRgM \
+    --backup-retention-period 31 | jq .
+#
+
+# # create-db-instance-read-replica -- should be in diff region
+#
+# aws rds create-db-instance-read-replica \
+#   --db-instance-identifier mydbinstance-replica \
+#   --source-db-instance-identifier mydbinstance-v2 \
+#   --no-publicly-accessible \
+#   --storage-type standard \
+#   --db-instance-class db.t2.medium \
+#   --db-subnet-group-name test-db-subnet | jq .
+#
+#
+
+# fin 0
+
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
+
+#
+ RDSsubnet1=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block "${RDS1cidr}" --availability-zone ${RDS1azone}  | grep 'SubnetId' | cut -d':' -f2 | tr -d '"| |,')
+
+# New Naming Standards
+ aws ec2 create-tags --resources "${RDSsubnet1}" --tags Key=Name,Value=${MajorTag}-${MinorTag}-rds1-${RDS1azone}-sn
+
+ echo ${RDSsubnet1} >> ${VpcId}-build-log.json
+ aws ec2 describe-subnets --subnet-ids ${RDSsubnet1} >> ${VpcId}-build-log.json
+
+# update creatCFG file
+echo "export RDSnet1=${RDSsubnet1}" >> ${build_CFG}
+
+echo "Select Availability Zone" >> ${VpcId}-build-log.json
+RDS1azone=$(aws ec2 describe-subnets --subnet-ids ${RDSsubnet1} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
+
+# update creatCFG file
+echo "export RDS1azone=${RDS1azone}" >> ${build_CFG}
+
+# fin 0

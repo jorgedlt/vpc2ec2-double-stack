@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+#
+# Create VPC, InternetGatewayId, Public & Private subnets with EC2
+#
+
+# jorgedlt@gmail.com - 03 MAR 2017 / 02 JUL 2017
+# additional private documentation
+# see - https://docs.google.com/document/d/1RdN2hbPeSvrCDTa76iZyExmVhF-Ct9iv-TcFNMRZwSU/edit
+
+
+# Load ENV parameters
+source ./createCFG.env
+
+echo "Create Internet Gateway"
+
+#debug block
+  ./showENV.sh
+#
+
+#
+echo Create Internet Gateway >> ${VpciId}-build-log.json
+
+ InternetiGatewayId=$(aws ec2 create-internet-gateway | grep InternetGatewayId | cut -d':' -f2 | tr -d '"| |,')
+
+# New Naming Standards
+ aws ec2 create-tags --resources ${InternetiGatewayId} --tags Key=Name,Value="${MajoriTag}-${MinoriTag}-igw"
+
+# update creatCFG file -- InternetGatewayId
+echo "export iNETGW=${InternetiGatewayId}" >> ${build_CFG}
+
+echo Attach Gateway >> ${VpciId}-build-log.json
+ aws ec2 attach-internet-gateway --vpc-id ${VpciId} --internet-gateway-id ${InternetiGatewayId}
+
+echo Create Route Table >> ${VpciId}-build-log.json
+ RouteTableId=$(aws ec2 create-route-table --vpc-id "${VpciId}" | grep RouteTableId | cut -d':' -f2 | tr -d '"| |,')
+ aws ec2 create-tags --resources ${RouteiTableId} --tags Key=Name,Value="${MajoriTag}-${MinoriTag}-rtb"
+
+ # update creatCFG file -- RouteTableId
+ echo "export RouterID=${RouteiTableId}" >> ${build_CFG}
+
+echo Create Routes >> ${VpciId}-build-log.json
+ RouteID=$(aws ec2 create-route --route-table-id "${RouteiTableId}" --destination-cidr-block 0.0.0.0/0 --gateway-id "${InternetiGatewayId}" > /dev/null 2>&1)
+ aws ec2 create-tags --resources ${RouteiID} --tags Key=Name,Value="${MajoriTag}-${MinoriTag}-route"
+
+ aws ec2 describe-route-tables >> ${VpciId}-build-log.json
+
+echo Route Associations >> ${VpciId}-build-log.json
+ aws ec2 associate-route-table --subnet-id ${publiciSub1} --route-table-id ${RouteiTableId} >> ${VpciId}-build-log.json
+ aws ec2 associate-route-table --subnet-id ${publiciSub2} --route-table-id ${RouteiTableId} >> ${VpciId}-build-log.json
+
+# this is where I stopped - this works but need to describe to the log, and update the CFG file with new ENV
+
+# optionally - an instance launched into the subnet automatically receives a public IP address
+# aws ec2 modify-subnet-attribute --subnet-id ${publicSubnet} --map-public-ip-on-launch
+# research how to bind ElasticIP at launch

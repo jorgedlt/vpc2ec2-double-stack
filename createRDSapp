@@ -11,13 +11,16 @@
 # Load ENV parameters
 source ./createCFG.env
 
-echo "Create RDS App Cluster "
+echo "Create RDS App Instance "
 
 #debug block
   ./showENV.sh
 #
 
+# TODO - These is loggin in place
+
 # create-db-parameter-group
+echo create-db-parameter-group
 aws rds create-db-parameter-group \
     --db-parameter-group-name processminer-grp \
     --db-parameter-group-family mysql5.7 \
@@ -33,6 +36,7 @@ sleep 30
 source ./createCFG.env        # be sure and source it
 
 # create-db-subnet-group
+echo create-db-subnet-group
 aws rds create-db-subnet-group \
  --db-subnet-group-name gp-bgisl-rds-grp \
  --db-subnet-group-description gp-bgisl-rds-grp \
@@ -41,6 +45,7 @@ aws rds create-db-subnet-group \
 sleep 30
 
 # create-db-instance
+echo create-db-instance
 aws rds create-db-instance \
     --db-name processminer \
     --db-instance-identifier processminer \
@@ -59,35 +64,73 @@ aws rds create-db-instance \
 # # create-db-instance-read-replica -- should be in diff region
 #
 # aws rds create-db-instance-read-replica \
-#   --db-instance-identifier mydbinstance-replica \
-#   --source-db-instance-identifier mydbinstance-v2 \
+#   --db-instance-identifier processminer-replica \
+#   --source-db-instance-identifier --ARN-- \
+#   --no-auto-minor-version-upgrade \
+#   --no-multi-az \
 #   --no-publicly-accessible \
 #   --storage-type standard \
 #   --db-instance-class db.t2.medium \
 #   --db-subnet-group-name test-db-subnet | jq .
 #
+#  Notes and Thoughts
+#   --no-auto-minor-version-upgrade     # a way to upgrade
+#   --password was reset -- manually after sync
+#  # https://aws.amazon.com/blogs/aws/cross-region-read-replicas-for-amazon-rds-for-mysql/
 #
+#   [--source-region <value>]           # this seems to be the key
+#
+# source - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.XRgn
+#
+# To create an encrypted Read Replica in a different AWS Region
+# than the source DB instance, you can use the AWS CLI
+# create-db-instance-read-replica command from the destination
+# AWS Region. The following parameters are used to create an
+# encrypted Read Replica in another AWS Region:
+#
+# --source-region — The AWS Region that the encrypted Read
+# Replica is created in. If source-region is not specified, you
+# must specify a pre-signed-url. A pre-signed-url is a URL that
+# contains a Signature Version 4 signed request for the
+# CreateDBInstanceReadReplica action that is called in the source
+# AWS Region where the Read Replica is created from. To learn
+# more about the pre-signed-url, see CreateDBInstanceReadReplica.
+#
+# --source-db-instance-identifier — The DB instance identifier
+# for the encrypted Read Replica that is created. This identifier
+# must be in the ARN format for the source AWS Region. The AWS
+# Region specified in source-db-instance-identifier must match
+# the AWS Region specified as the source-region.
+#
+# --db-instance-identifier — The identifier for the encrypted
+# Read Replica in the destination AWS Region.
+#
+# --kms-key-id — The AWS KMS key identifier for the key to use to
+# encrypt the Read Replica in the destination AWS Region.
+
+# aws rds create-db-instance-read-replica \
+#     --db-instance-identifier DBInstanceIdentifier \
+#     --region us-west-2 \
+#     --source-db-instance-identifier arn:aws:rds:us-east-1:123456789012:db:my-mysql-instance
+#
+
+# Wait for the instance to reach various states
+# When you delete the instance (above), you can’t create the new instance until
+# the delete operation is complete or else the instance identifier will still
+# clash. Here’s a function that will do that for you:
+#
+# function wait-until-deleted {
+#     instance=$1
+#     count=1
+#     while [[ "$count" != "0" ]]; do
+#         count=`aws rds describe-db-instances \
+#             --db-instance-identifier $instance 2>/dev/null \
+#             | grep DBINSTANCES \
+#             | wc -l`
+#         sleep 5
+#     done
+# }
 
 # fin 0
 
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
-
-#
- RDSsubnet1=$(aws ec2 create-subnet --vpc-id "${VpcId}" --cidr-block "${RDS1cidr}" --availability-zone ${RDS1azone}  | grep 'SubnetId' | cut -d':' -f2 | tr -d '"| |,')
-
-# New Naming Standards
- aws ec2 create-tags --resources "${RDSsubnet1}" --tags Key=Name,Value=${MajorTag}-${MinorTag}-rds1-${RDS1azone}-sn
-
- echo ${RDSsubnet1} >> ${VpcId}-build-log.json
- aws ec2 describe-subnets --subnet-ids ${RDSsubnet1} >> ${VpcId}-build-log.json
-
-# update creatCFG file
-echo "export RDSnet1=${RDSsubnet1}" >> ${build_CFG}
-
-echo "Select Availability Zone" >> ${VpcId}-build-log.json
-RDS1azone=$(aws ec2 describe-subnets --subnet-ids ${RDSsubnet1} | grep AvailabilityZone | cut -d':' -f2 | tr -d '"| |,')
-
-# update creatCFG file
-echo "export RDS1azone=${RDS1azone}" >> ${build_CFG}
-
-# fin 0
