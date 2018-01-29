@@ -5,7 +5,7 @@
 
 # Log file
 *.log
-*-log.json
+*log.json
 
 # AWS env files
 *.pem

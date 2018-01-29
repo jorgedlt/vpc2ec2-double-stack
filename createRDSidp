@@ -17,6 +17,11 @@ echo "Create RDS App Cluster "
   ./showENV.sh
 #
 
+# TODO - These is loging in place
+
+# DOUBLE CHECK
+# - https://processminer.atlassian.net/wiki/spaces/TEC/pages/28213258/International+Papers
+
 # create-db-parameter-group
 aws rds create-db-parameter-group \
     --db-parameter-group-name processminer-grp \
@@ -47,6 +52,7 @@ aws rds create-db-instance \
     --db-instance-class db.t2.medium \
     --db-subnet-group-name gp-bgisl-rds-grp \
     --multi-az \
+    --iops 1000 \
     --publicly-accessible \
     --engine MySQL \
     --engine-version 5.7.16 \

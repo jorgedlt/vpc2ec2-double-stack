@@ -45,13 +45,13 @@ cleanCFG=$(tail -n +72 createCFG.env | egrep -ic "VpcId|Pubnet|AvailabilityZone|
 # PRIVATE Subnet
  source ./createRDSnet2
 
-# PUB EC2
+# PUB EC2 -- For Main Site App 1
 source ./createPUBEC2-1          #
-# PUB EC2
+# PUB EC2 -- For Main Site App 2
 source ./createPUBEC2-2          #
 
 # Machine Learning Server
-source ./createPUBEC2-2          #
+source ./createPUBEC2-ml         #
 
 # RDS Bastion Server
 source ./createPUBEC2-bastion    #
