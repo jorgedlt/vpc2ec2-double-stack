@@ -18,7 +18,6 @@ sudo apt-get install -y --no-install-recommends \
  libcurl4-openssl-dev \
  htop \
  ntp \
- git \
  make \
  gcc \
  libc6-dev ca-certificates

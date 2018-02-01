@@ -16,9 +16,7 @@ sudo apt update -y && sudo apt upgrade -y
 sudo apt-get install -y --no-install-recommends \
  automake \
  libcurl4-openssl-dev \
- htop \
  ntp \
- git \
  make \
  gcc \
  libc6-dev ca-certificates

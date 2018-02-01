@@ -13,7 +13,7 @@ source ./createCFG.env
 echo "Create PUBLIC subnet"
 
 #debug block
-  ./showENV.sh
+  ./showiENV.sh
 #
 
  publicSub2=$(aws ec2 create-subnet --vpc-id "${VpciId}" --cidr-block ${PUB2icidr} --availability-zone ${PUB2iazone} | grep SubnetId | cut -d':' -f2 | tr -d '"| |,')

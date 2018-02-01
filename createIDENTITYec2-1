@@ -11,22 +11,22 @@
 # Load ENV parameters
 source ./createCFG.env
 
-echo "Create EC2-Public 1"
+echo "Create EC2-Public IDENTITY 2"
 
 #debug block
-  ./showENV.sh
+  ./showiENV.sh
 #
 
-EC2pub1=$(aws ec2 run-instances --count 1 \
+EC2ide1=$(aws ec2 run-instances --count 1 \
  --image-id "${EC2_ami}" \
- --instance-type "${EC2_type}" \
- --key-name "${EC2_keyname}" \
- --security-group-ids "${SGssh}" \
- --subnet-id "${PUBnet1}" \
+ --instance-type "${EC2i_type}" \
+ --key-name "${EC2i_keyname}" \
+ --security-group-ids "${SGissh}" \
+ --subnet-id "${PUBinet1}" \
  --associate-public-ip-address \
  --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"VolumeSize\":100}}]" \
  --user-data file://ec2configs/public-ec2-build.sh \
- --placement AvailabilityZone="${AZone1}" \
+ --placement AvailabilityZone="${iAZone1}" \
   | grep InstanceId | cut -d':' -f2 | tr -d '"|,| ' )
 
 #   --user-data file://ec2configs/public-ec2-build.sh \
@@ -35,6 +35,6 @@ EC2pub1=$(aws ec2 run-instances --count 1 \
 #
 #  workerID=$( echo {0..9}{0..9}{0..9}{0..9} | tr ' ' '\012' | gshuf | head -1 )
 #
-  aws ec2 create-tags --resources ${EC2pub1} --tags Key=Name,Value=${MajorTag}-${MinorTag}-pub1-appsrv-${AZone1}-ec2
+  aws ec2 create-tags --resources ${EC2ide1} --tags Key=Name,Value=${MajoriTag}-${MinoriTag}-pub1-identity-${iAZone1}-ec2
 
 # TODO - needs ec2 instance lock out and detail monitoring

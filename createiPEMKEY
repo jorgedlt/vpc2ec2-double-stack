@@ -14,7 +14,7 @@ source ./createCFG.env
 echo "Create Key Pair"
 
 #debug block
-  ./showENV.sh
+  ./showiENV.sh
 #
 
 export myACCOUNT=$(aws iam list-account-aliases | tr -d '{|}|[|]|"| |-' | egrep -v ':|^$');
@@ -23,14 +23,14 @@ export myREGION=$(aws configure list | grep region | awk '{print $2}' | tr -d '{
 # create-key-pairs
 aws ec2 create-key-pair \
  --region ${AWS_DEFAULT_REGION} \
- --key-name "${myACCOUNT}-${myREGION}-${MajorTag}-${MinorTag}-${VpcId}" \
- | jq -r ".KeyMaterial" > ./${myACCOUNT}-${myREGION}-${MajorTag}-${MinorTag}-${VpcId}.pem
+ --key-name "${myACCOUNT}-${myREGION}-${MajoriTag}-${MinoriTag}-${VpcId}" \
+ | jq -r ".KeyMaterial" > ./${myACCOUNT}-${myREGION}-${MajoriTag}-${MinoriTag}-${VpciId}.pem
 
 #  | grep KeyMaterial | cut -d':' -f2 | tr -d ',|"| |')
 # echo -e ${MyKEY} > ${myACCOUNT}-${myREGION}-${VpcId}.pem
 
 # update creatCFG file
-echo "export EC2_keyname=${myACCOUNT}-${myREGION}-${MajorTag}-${MinorTag}-${VpcId}" >> ${build_CFG}
+echo "export EC2_keyname=${myACCOUNT}-${myREGION}-${MajoriTag}-${MinoriTag}-${VpciId}" >> ${build_CFG}
 
 # To Show - aws ec2 describe-key-pairs
 # Set Env - export MyKeyPair='MyKeyPair'

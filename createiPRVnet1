@@ -14,7 +14,7 @@ source ./createCFG.env
 echo "Create PRIVATE subnet "
 
 #debug block
-  ./showENV.sh
+  ./showiENV.sh
 #
 
 #

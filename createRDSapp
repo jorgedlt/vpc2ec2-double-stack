@@ -41,8 +41,8 @@ source ./createCFG.env        # be sure and source it
 # create-db-subnet-group
 echo create-db-subnet-group
 aws rds create-db-subnet-group \
- --db-subnet-group-name gp-bgisl-rds-grp \
- --db-subnet-group-description gp-bgisl-rds-grp \
+ --db-subnet-group-name ${MajorTag}-${MinorTag}-rds-grp \
+ --db-subnet-group-description ${MajorTag}-${MinorTag}-rds-grp \
  --subnet-ids ${RDSnet1} ${RDSnet2} | jq .
 #
 sleep 30
@@ -53,17 +53,17 @@ aws rds create-db-instance \
     --db-name processminer \
     --db-instance-identifier processminer \
     --db-instance-class db.t2.medium \
-    --db-subnet-group-name gp-bgisl-rds-grp \
+    --db-subnet-group-name ${MajorTag}-${MinorTag}-rds-grp \
     --multi-az \
     --iops 1000 \
     --publicly-accessible \
     --engine MySQL \
     --engine-version 5.7.16 \
     --allocated-storage 120 \
-    --master-username gpbgislmasterusr \
+    --master-username ${MajorTag}${MinorTag}masterusr \
     --master-user-password MwwNHkUp3KMxRgM \
     --backup-retention-period 31 | jq .
-#
+# needs to be private flag
 
 # # create-db-instance-read-replica -- should be in diff region
 #

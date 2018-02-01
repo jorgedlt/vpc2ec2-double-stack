@@ -11,14 +11,14 @@
 # Load ENV parameters
 source ./createCFG.env
 
-echo "create AWS-VPC"
+echo "create AWS-iVPC"
 
 #debug block
-  ./showENV.sh
+  ./showiENV.sh
 #
 
 # aws ec2 create-vpc
-VpcId=$(aws ec2 create-vpc --cidr-block ${iVPCcidr} | grep VpcId | cut -d':' -f2 | tr -d '"| |,')
+VpcId=$(aws ec2 create-vpc --cidr-block ${VPCicidr} | grep VpcId | cut -d':' -f2 | tr -d '"| |,')
 
 # New Naming Standards
  aws ec2 create-tags --resources ${VpciId} --tags Key=Name,Value="${MajoriTag}-${MinoriTag}-vpc"

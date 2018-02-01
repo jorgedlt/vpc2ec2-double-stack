@@ -9,20 +9,20 @@ echo
 export myACCOUNT=$(aws iam list-account-aliases | tr -d '{|}|[|]|"| |-' | egrep -v ':|^$');
 export myREGION=$(aws configure list | grep region | awk '{print $2}' | tr -d '{|}|[|]|"| |-' );
 #
- echo "${CYAN}  ACCNTID            :${WHITE} ${myACCNTID}"
- echo "${CYAN}  ACCOUNT            :${WHITE} ${myACCOUNT}"
- echo "${CYAN}  REGION             :${WHITE} ${myREGION}"
+ echo "${CYAN}  ACCNTID              :${WHITE} ${myACCNTID}"
+ echo "${CYAN}  ACCOUNT              :${WHITE} ${myACCOUNT}"
+ echo "${CYAN}  REGION               :${WHITE} ${myREGION}"
  echo
- echo "${CYAN}  MajoriTag           :${WHITE} ${MajoriTag}"
- echo "${CYAN}  MinoriTag           :${WHITE} ${MinoriTag}"
+ echo "${CYAN}  MajoriTag            :${WHITE} ${MajoriTag}"
+ echo "${CYAN}  MinoriTag            :${WHITE} ${MinoriTag}"
  echo
- echo "${CYAN}  build_CFG file     :${GREEN} ${build_CFG}"
- echo "${CYAN}  VPCiid              :${YELLOW} ${VpciId}"
- echo "${CYAN}  VPC_stack          :${YELLOW} ${VPC_stack}"
- echo "${CYAN}  EC2_stack          :${YELLOW} ${EC2_stack}"
+ echo "${CYAN}  build_CFG file       :${GREEN} ${build_CFG}"
+ echo "${CYAN}  VPCiid               :${YELLOW} ${VpciId}"
+ echo "${CYAN}  VPC_stack            :${YELLOW} ${VPC_stack}"
+ echo "${CYAN}  EC2_stack            :${YELLOW} ${EC2_stack}"
  echo
- echo "${CYAN}  iNETGW             :${YELLOW} ${iNETGW}"
- echo "${CYAN}  RouterID           :${YELLOW} ${RouterID}"
+ echo "${CYAN}  iNETGW               :${YELLOW} ${iNETGW}"
+ echo "${CYAN}  RouterID             :${YELLOW} ${RouterID}"
  echo
  echo "${CYAN}  PUB1icidr            :${GREEN} ${PUB1cidr}"
  echo "${CYAN}  PRV1icidr            :${GREEN} ${PRV1cidr}"
@@ -44,11 +44,11 @@ export myREGION=$(aws configure list | grep region | awk '{print $2}' | tr -d '{
  echo "${CYAN}  PRVinet2             :${YELLOW} ${PRVinet2}"
  echo "${CYAN}  RDSinet2             :${YELLOW} ${RDSinet2}"
  echo
- echo "${CYAN}  AWS_DEFAULT_REGION :${GREEN} ${AWS_DEFAULT_REGION}"
+ echo "${CYAN}  AWS_DEFAULT_REGION   :${GREEN} ${AWS_DEFAULT_REGION}"
  echo
- echo "${CYAN}  SGssh              :${YELLOW} ${SGssh}"
- echo "${CYAN}  EC2i_ami            :${GREEN} ${EC2i_ami}"
- echo "${CYAN}  EC2itype           :${GREEN} ${EC2i_type}"
- echo "${CYAN}  EC2i_keyname        :${YELLOW} ${EC2i_keyname}"
+ echo "${CYAN}  SGissh               :${YELLOW} ${SGissh}"
+ echo "${CYAN}  EC2i_ami             :${GREEN} ${EC2i_ami}"
+ echo "${CYAN}  EC2i_type            :${GREEN} ${EC2i_type}"
+ echo "${CYAN}  EC2i_keyname         :${YELLOW} ${EC2i_keyname}"
 #
 echo ${RESET}

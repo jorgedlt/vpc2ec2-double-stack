@@ -15,7 +15,7 @@ source ./createCFG.env
 echo "Create Internet Gateway"
 
 #debug block
-  ./showENV.sh
+  ./showiENV.sh
 #
 
 #

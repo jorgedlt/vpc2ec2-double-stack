@@ -1,0 +1,16 @@
+[37mSecurity Group [[33m    Security.Group.for.Access	nsg-902e59e3	gp-bgisl-sg	189853879597	vpc-c3d435bb[37m] TAG [[33m gp-bgisl-sg-alb [37m] SG [[33m sg-902e59e3 [37m]
+[35mINBOUND: [32mOpen to [[33m tcp [32m] port [[33m 80 [32m] from these IP Address(es);
+   [31m0.0.0.0/0  
+
+[35mINBOUND: [32mOpen to [[33m tcp [32m] port [[33m 8080 [32m] from these IP Address(es);
+   [31m10.33.0.0/16, 
+
+[35mINBOUND: [32mOpen to [[33m tcp [32m] port [[33m 22 [32m] from these IP Address(es);
+   [31m98.251.81.179/32 173.46.67.139/32 34.239.243.201/32, 68.235.53.221/32 107.172.254.2/32 209.58.139.29/32 35.166.12.205/32, 35.160.201.55/32, 34.227.169.62/32, 34.199.31.216/32, 
+
+[35mINBOUND: [32mOpen to [[33m tcp [32m] port [[33m 443 [32m] from these IP Address(es);
+   [31m0.0.0.0/0  
+
+[35mOUTBOUND: [32mOpen to [[33m all-protocals [32m] port [[33m all-ports [32m] to these IP Address(es);
+   [31m0.0.0.0/0 
+

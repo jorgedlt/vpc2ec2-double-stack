@@ -19,8 +19,8 @@ source ./createCFG.env
 echo $myACCOUNT $AWSaccount
 [[ "$myACCOUNT" -eq "$AWSaccount" ]] && { : ; } || { echo ERROR Account MisMatch ; exit ; }
 
-cleanCFG=$(tail -n +36 createCFG.env | egrep -ic "VpcId|Pubnet|AvailabilityZone|PRVnet|iNETGW|RouterID")
-[ $cleanCFG -gt 0 ] && { echo ERROR Config file is already populated ; exit ; }
+# cleanCFG=$(tail -n +36 createCFG.env | egrep -ic "VpcId|Pubnet|AvailabilityZone|PRVnet|iNETGW|RouterID")
+# [ $cleanCFG -gt 0 ] && { echo ERROR Config file is already populated ; exit ; }
 
 # VPC
  source ./createiVPC

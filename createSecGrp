@@ -18,7 +18,7 @@ echo "Create Securitygroup"
 #
 
 echo Create Securitygroup >> ${VpcId}-build-log.json
- securitygroup=$(aws ec2 create-security-group --group-name "${MajorTag}-${MinorTag}-ssh-sg" --description "Security Group for SSH Access" --vpc-id ${VpcId} | grep GroupId | cut -d':' -f2 | tr -d '"| |,' )
+ securitygroup=$(aws ec2 create-security-group --group-name "${MajorTag}-${MinorTag}-sg" --description "Security Group for APP Access" --vpc-id ${VpcId} | grep GroupId | cut -d':' -f2 | tr -d '"| |,' )
 
 aws ec2 describe-security-groups --group-id ${securitygroup} >> ${VpcId}-build-log.json
 
@@ -27,16 +27,26 @@ echo SecurityGroup Values >> ${VpcId}-build-log.json
 # Hot 3 -- DLT Home and Work Plus Manan
  aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "76.20.211.169/32"  # DLT Home
  aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "34.239.243.201/32" # Manan WS
+# Jenkins Server
+ aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "35.160.201.55/32" # Jenkins WS
+# India Team
+ aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "34.227.169.62/32" # Nitest WS
+ aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "34.199.31.216/32" # Sachin WS
+ aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "34.206.160.55/32" # Keval WS
+ aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "52.45.228.69/32" # Sagar WS
+ aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "34.233.23.57/32" # Kamlesh WS
 
 # VPN 3 via NORD
  aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "68.235.53.221/32" # NORD Chicago
  aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "107.172.254.2/32" # NORD Buffalo
  aws ec2 authorize-security-group-ingress --group-id ${securitygroup} --protocol tcp --port 22 --cidr "209.58.139.29/32" # NORD SanJose
 
+# add port 80 and 443 rules
+
  # New Naming Standards
  # aws ec2 create-tags --resources ${securitygroup} --tags Key=Name,Value="${VPC_stack}-${EC2_stack}-sg"
 
- aws ec2 create-tags --resources ${securitygroup} --tags Key=Name,Value=${MajorTag}-${MinorTag}-ssh-sg
+ aws ec2 create-tags --resources ${securitygroup} --tags Key=Name,Value=${MajorTag}-${MinorTag}-app-sg
 
  ## double up
 
