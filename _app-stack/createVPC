@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+#
+# Create VPC, InternetGatewayId, Public & Private subnets with EC2
+#
+
+# jorgedlt@gmail.com - 03 MAR 2017 / 02 JUL 2017
+# additional private documentation
+# see - https://docs.google.com/document/d/1RdN2hbPeSvrCDTa76iZyExmVhF-Ct9iv-TcFNMRZwSU/edit
+
+# Load ENV parameters
+source ./createCFG.env
+
+echo "create AWS-VPC"
+
+#debug block
+  ./showENV.sh
+#
+
+# aws ec2 create-vpc
+VpcId=$(aws ec2 create-vpc --cidr-block ${VPCcidr} | grep VpcId | cut -d':' -f2 | tr -d '"| |,')
+aws ec2 create-tags --resources ${VpcId} --tags Key=Name,Value="${VPC_stack}${VPC_envmt}-vpc"
+
+date             > ${VpcId}-build-log.json
+echo "${VpcId}" >> ${VpcId}-build-log.json
+aws ec2 describe-vpcs >> ${VpcId}-build-log.json
+
+echo "Modify-VOC attribute DNS attributes"
+ aws ec2 modify-vpc-attribute --vpc-id "${VpcId}" --enable-dns-support "{\"Value\":true}"
+ aws ec2 modify-vpc-attribute --vpc-id "${VpcId}" --enable-dns-hostnames "{\"Value\":true}"
+
+# update creatCFG file
+  echo "export VpcId=${VpcId}" >> ${build_CFG}
+
+# fin 0;
